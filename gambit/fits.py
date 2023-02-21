@@ -42,7 +42,7 @@ def view_fits(data,mask=None,std_range=None,cmap=None):
         ax.imshow(cmap, origin= 'lower',alpha=0.25)
     plt.show()
     
-def view_fits_with_sep_objects(data,sep_objects):
+def view_fits_with_sep_objects(data,sep_objects,f=6):
     """view fits files with sep objects ontop"""
     
     fig, ax = plt.subplots() #https://matplotlib.org/stable/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D
@@ -64,19 +64,19 @@ def view_fits_with_sep_objects(data,sep_objects):
         theta = sep_objects[i]['theta']
 
         color = cm(1.*i/NUM_COLORS)
-        e = Ellipse(xy=(x, y), width=6*a, height=6*b, angle=theta * 180. / np.pi)
+        e = Ellipse(xy=(x, y), width=f*a, height=f*b, angle=theta * 180. / np.pi)
         e.set_facecolor('none')
         e.set_edgecolor(color)
         ax.add_artist(e)
         
         
-        xt = 3*a*np.cos(theta)
-        yt = 3*a*np.sin(theta)
+        xt = 0.5*f*a*np.cos(theta)
+        yt = 0.5*f*a*np.sin(theta)
         plt.plot([x-xt,x+xt],[y-yt,y+yt],color=color,linestyle="--")
         
 
-        xt = 3*b*np.cos(theta+np.pi/2)
-        yt = 3*b*np.sin(theta+np.pi/2)
+        xt = 0.5*f*b*np.cos(theta+np.pi/2)
+        yt = 0.5*f*b*np.sin(theta+np.pi/2)
         plt.plot([x-xt,x+xt],[y-yt,y+yt],color=color,linestyle="--")
         
         plt.plot(sep_objects[i]['xcpeak'], sep_objects[i]['ycpeak'], marker='o', color=color)
