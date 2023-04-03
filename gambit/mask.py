@@ -32,10 +32,10 @@ def clean_mask(mask,min_size=64,connectivity=1):
     """clean mask by removing small noise"""
     return remove_small_objects(mask.astype(bool), min_size,connectivity)
 
-def create_foreground_mask(data,min_area_frac=0.0625,connectivity=9):
+def create_foreground_mask(data,mask=None,min_area_frac=0.0625,connectivity=9):
     """create a cleaned foreground mask"""
     #Step 1) calculate clipped stats:
-    image_mean, image_median, image_stddev = sigma_clipped_stats(data, sigma=3) #estimate background with astropy
+    image_mean, image_median, image_stddev = sigma_clipped_stats(data, sigma=3,mask=mask) #estimate background with astropy
 
     #Step 2) select foreground based on clipped stats
     foreground = data >= image_mean+image_stddev
@@ -44,9 +44,9 @@ def create_foreground_mask(data,min_area_frac=0.0625,connectivity=9):
     min_size = data.shape[0]*data.shape[1]*min_area_frac
     return clean_mask(foreground,min_size,connectivity)
 
-def create_segmentation_masks(data):
+def create_segmentation_masks(data,mask=None):
     """cretae a foreground and background mask"""
-    foreground_mask = create_foreground_mask(data)
+    foreground_mask = create_foreground_mask(data,mask)
     background_mask = np.logical_not(foreground_mask)
 
     return (foreground_mask,background_mask)
